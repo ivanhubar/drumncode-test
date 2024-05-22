@@ -1,0 +1,20 @@
+nelmio_api_doc:
+    documentation:
+        servers:
+            - url: http://localhost:88
+              description: Localhost API
+        info:
+            title: Drumncode Test
+            description: API Documentation for Drumncode Test app
+            version: 1.0.0
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+        security:
+            - Bearer: []
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

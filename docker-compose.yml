@@ -1,0 +1,50 @@
+version: '3'
+services:
+  php:
+    container_name: drumncode_test_php
+    build:
+      context: docker/php
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./app:/app
+      - ./.git:/app/.git
+    depends_on:
+      - postgres
+    networks:
+      - drumncode
+  nginx:
+    container_name: drumncode_test_nginx
+    build:
+      context: docker/nginx
+    restart: always
+    volumes:
+      - ./app/public:/app/public
+    env_file:
+      - .env
+    ports:
+      - "${NGINX_EXPOSE_PORT}:88"
+    depends_on:
+      - php
+    networks:
+      - drumncode
+  postgres:
+    container_name: drumncode_test_postgres
+    image: postgres:13
+    volumes:
+      - ./docker/postgres:/var/lib/postgresql/data
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - "POSTGRES_USER=${POSTGRES_USER}"
+      - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+      - "POSTGRES_DB=${POSTGRES_DATABASE}"
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    networks:
+      - drumncode
+
+networks:
+  drumncode:

@@ -1,0 +1,25 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    _instanceof:
+        App\Service\Task\GetTaskProviders\GetTaskProviderInterface:
+            tags: ['app.service.task.get_task_providers.get_task_provider_interface']
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Service\Task\TaskGetter:
+        arguments:
+            $providers: !tagged_iterator app.service.task.get_task_providers.get_task_provider_interface
+
+    App\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
